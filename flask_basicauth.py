@@ -13,6 +13,7 @@ import base64
 from functools import wraps
 
 from flask import current_app, request, Response
+from werkzeug.security import safe_str_cmp
 
 
 __version__ = '0.2.0'
@@ -65,7 +66,9 @@ class BasicAuth(object):
         """
         correct_username = current_app.config['BASIC_AUTH_USERNAME']
         correct_password = current_app.config['BASIC_AUTH_PASSWORD']
-        return username == correct_username and password == correct_password
+        username_matched = safe_str_cmp(username, correct_username)
+        password_matched = safe_str_cmp(password, correct_password)
+        return username_matched and password_matched
 
     def authenticate(self):
         """
